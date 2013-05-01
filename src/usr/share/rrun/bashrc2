@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#Apply the user's normal settings
+[ -a ~/.bashrc ] && source ~/.bashrc
+
+#Use rrun history if present
+[ -a ~/.rrun_history ] && HISTFILE=~/.rrun_history
+
+#Set the name of window and prompt
+PS1="\[\033]0;rRun\007\]\\$ "
+
+export SUDO_ASKPASS="/usr/bin/X11/ssh-askpass"
+alias sudo='sudo -A '
+
+delayandclose() {
+	echo
+	echo "Program exited with status: $?"
+	xttitle "rRun: $BASHPID [completed]"
+	xwininfo -id $wid | grep -q 'Map State: IsViewable'
+	if [ $? -ne 0 ]; then
+		read -t 60 -n 1 -s || exit
+	fi
+	echo
+	read -p "Press q to quit" -s -d q
+	exit
+}
+
+background() {
+	[ -n "$COMP_LINE" ] && return
+        history -a
+
+	xttitle "rRun: $BASHPID"
+	xdotool windowunmap $wid
+	trap DEBUG
+
+	PROMPT_COMMAND="delayandclose"
+}
+
+set -o functrace
+shopt -s extdebug
+
+wid=`xdotool getactivewindow`
+
+trap 'background' DEBUG

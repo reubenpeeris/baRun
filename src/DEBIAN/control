@@ -1,0 +1,9 @@
+Package: rrun
+Version: 0.9
+Section: x11
+Priority: extra
+Architecture: all
+Depends: bash (>= 3), x-terminal-emulator, xdotool
+Suggests: ssh-askpass
+Maintainer: Reuben Peeris <reubenpeeris@gmail.com>
+Description: An X11 application launcher based on bash.

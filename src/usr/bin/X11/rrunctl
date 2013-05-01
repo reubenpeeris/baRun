@@ -1,0 +1,101 @@
+#!/bin/bash
+
+help() {
+	echo 'Usage: rrunctl command arguments'
+	echo 'where valid command are:'
+	echo 'help              Print this message'
+	echo 'show wid          Shows the specified window'
+	echo 'hide wid          Hides the specified window'
+	echo 'find wid		Finds the window id of the rRun launcher that started the specified window'
+	echo 'toggle [wid]	If wid denotes an rRun launcher, hide the rRun window.'
+	echo '                  If wid denotes a window started by rRun, show the associated rRun launcher'
+	echo '                  If no wid specified, use the wid of the active window'
+	echo 'wname wid         Prints the window name (title) of the window denoted by wid'
+	echo 'ls [completed,name]	Lists the rRun windows by wid'
+	echo '                  If 'name' is passed list by name'
+	echo '                  If 'completed' is passed only list 'completed' rRun launchers'
+	echo 'showcompleted       Show all 'completed' rRun launchers'
+}
+
+-help() {
+	help
+}
+
+-h() {
+	help
+}
+
+show() {
+	local wid=${1}
+	if [ "$wid" != "" ]; then
+		xdotool windowmap --sync $wid
+		xdotool windowraise $wid
+		xdotool windowfocus --sync $wid
+		xdotool windowactivate --sync $wid
+	fi;
+}
+
+hide() {
+	local wid=${1}
+	xdotool windowunmap "$wid"
+}
+
+find() {
+	local wid=${1}
+	local pid=`xdotool getwindowpid $wid`
+	while [[ "$rrunwid" == "" && $pid != 1 ]]; do
+		local rrunwid=`xdotool search --name "rRun: $pid"`
+		local pid=`ps -o ppid= $pid | sed -e 's/ //g'`
+	done
+
+	echo $rrunwid
+}
+
+toggle() {
+	if [ -z "$1" ]; then
+		local wid=`xdotool getactivewindow`
+	else
+		local wid=${1}
+	fi
+
+	local wname=`wname $wid`
+	
+	if [[ $wname =~ ^rRun:\ [0-9]*$ ]]; then
+		hide $wid
+	else
+		show `find $wid`
+	fi;
+}
+
+wname() {
+	local wid=${1}
+	xwininfo -id $wid | sed -e 's/^xwininfo: Window id: [^ ]\+ "\(.*\)"$/\1/;tx;d;:x'
+}
+
+ls() {
+	local options=,${1},
+	local filter='rRun: [0-9]*'
+	if [[ "$options" == *,completed,* ]]; then
+		filter="$filter \[completed\]"
+	else
+		filter="$filter.*"
+	fi
+	for wid in `xdotool search --name "$filter"`; do
+		if [[ "$options" == *,name,* ]]; then
+			wname $wid
+		else
+			echo $wid
+		fi
+	done
+}
+
+showcompleted() {
+	for wid in `ls completed`; do
+		show $wid
+		xdotool key Escape
+	done;
+}
+
+fu="$1"
+shift
+$fu $*
