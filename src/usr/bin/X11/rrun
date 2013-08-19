@@ -1,3 +1,5 @@
 #!/bin/bash
+export rruncmd="$@"
+
 x-terminal-emulator -e /bin/bash --rcfile "/usr/share/rrun/bashrc" &
 

@@ -41,4 +41,11 @@ shopt -s extdebug
 
 wid=`xdotool getactivewindow`
 
-trap 'background' DEBUG
+
+if [[ -n "$rruncmd" ]]; then
+	echo "\$ $rruncmd"
+	trap 'background' DEBUG
+	"$rruncmd"
+else
+	trap 'background' DEBUG
+fi
