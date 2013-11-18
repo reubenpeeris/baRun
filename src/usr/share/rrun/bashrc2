@@ -8,6 +8,7 @@
 
 #Set the name of window and prompt
 PS1="\[\033]0;rRun\007\]\\$ "
+unset PROMPT_COMMAND
 
 export SUDO_ASKPASS="/usr/bin/X11/ssh-askpass"
 alias sudo='sudo -A '
