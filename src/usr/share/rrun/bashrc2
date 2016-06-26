@@ -27,7 +27,10 @@ delayandclose() {
 }
 
 background() {
-	[ -n "$COMP_LINE" ] && return
+	[[ -n $COMP_LINE ]] && return
+	[[ $BASH_COMMAND =~ ^(__)?fzf ]] && return
+	[[ ${FUNCNAME[1]} =~ ^(__)?fzf ]] && return
+
         history -a
 
 	xttitle "rRun: $BASHPID"
