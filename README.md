@@ -1,6 +1,5 @@
-rRun
-====
+# baRun
 
-An application launcher with all the power of bash.
+Bourne Again Run - an application launcher with all the power of bash.
 
-[Further Information](http://reubenpeeris.com/category/rrun/)
+[Further Information](http://reubenpeeris.com/rrun/)

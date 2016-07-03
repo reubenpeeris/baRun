@@ -1,0 +1,4 @@
+#!/bin/sh
+export baruncmd="$@"
+
+x-terminal-emulator -e "/usr/share/barun/launch-barun" &

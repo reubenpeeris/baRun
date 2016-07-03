@@ -1,20 +1,20 @@
 #!/bin/bash
 
 help() {
-	echo 'Usage: rrunctl command arguments'
+	echo 'Usage: barunctl command arguments'
 	echo 'where valid command are:'
 	echo 'help              Print this message'
 	echo 'show wid          Shows the specified window'
 	echo 'hide wid          Hides the specified window'
-	echo 'find wid		Finds the window id of the rRun launcher that started the specified window'
-	echo 'toggle [wid]	If wid denotes an rRun launcher, hide the rRun window.'
-	echo '                  If wid denotes a window started by rRun, show the associated rRun launcher'
+	echo 'find wid		Finds the window id of the baRun launcher that started the specified window'
+	echo 'toggle [wid]	If wid denotes an baRun launcher, hide the baRun window.'
+	echo '                  If wid denotes a window started by baRun, show the associated baRun launcher'
 	echo '                  If no wid specified, use the wid of the active window'
 	echo 'wname wid         Prints the window name (title) of the window denoted by wid'
-	echo 'ls [completed,name]	Lists the rRun windows by wid'
+	echo 'ls [completed,name]	Lists the baRun windows by wid'
 	echo '                  If 'name' is passed list by name'
-	echo '                  If 'completed' is passed only list 'completed' rRun launchers'
-	echo 'showcompleted       Show all 'completed' rRun launchers'
+	echo '                  If 'completed' is passed only list 'completed' baRun launchers'
+	echo 'showcompleted       Show all 'completed' baRun launchers'
 }
 
 -help() {
@@ -43,12 +43,12 @@ hide() {
 find() {
 	local wid=${1}
 	local pid=`xdotool getwindowpid $wid`
-	while [[ "$rrunwid" == "" && $pid != 1 ]]; do
-		local rrunwid=`xdotool search --name "rRun: $pid"`
+	while [[ "$barunwid" == "" && $pid != 1 ]]; do
+		local barunwid=`xdotool search --name "baRun: $pid"`
 		local pid=`ps -o ppid= $pid | sed -e 's/ //g'`
 	done
 
-	echo $rrunwid
+	echo $barunwid
 }
 
 toggle() {
@@ -60,7 +60,7 @@ toggle() {
 
 	local wname=`wname $wid`
 	
-	if [[ $wname =~ ^rRun:\ [0-9]*$ ]]; then
+	if [[ $wname =~ ^baRun:\ [0-9]*$ ]]; then
 		hide $wid
 	else
 		show `find $wid`
@@ -74,7 +74,7 @@ wname() {
 
 ls() {
 	local options=,${1},
-	local filter='rRun: [0-9]*'
+	local filter='baRun: [0-9]*'
 	if [[ "$options" == *,completed,* ]]; then
 		filter="$filter \[completed\]"
 	else

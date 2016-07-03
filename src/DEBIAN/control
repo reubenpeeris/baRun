@@ -1,9 +1,10 @@
-Package: rrun
-Version: 0.92
+Package: barun
+Version: 0.99
 Section: x11
 Priority: extra
 Architecture: all
-Depends: bash (>= 3), x-terminal-emulator, xdotool, xttitle
+Depends: bash (>= 4), x-terminal-emulator, xdotool, xttitle
 Suggests: ssh-askpass
-Maintainer: Reuben Peeris <reubenpeeris@gmail.com>
+Conflicts: rrun
+Maintainer: Reuben Peeris <reuben@reubenpeeris.com>
 Description: An X11 application launcher based on bash.

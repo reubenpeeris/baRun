@@ -1,13 +1,11 @@
-#!/bin/bash
-
 #Apply the user's normal settings
-[ -a ~/.bashrc ] && source ~/.bashrc
+[ -a ~/.bashrc ] && . ~/.bashrc
 
-#Use rrun history if present
-[ -a ~/.rrun_history ] && HISTFILE=~/.rrun_history
+#Use barun history if present
+[ -a ~/.barun_history ] && HISTFILE=~/.barun_history
 
 #Set the name of window and prompt
-PS1="\[\033]0;rRun\007\]\\$ "
+PS1="\[\033]0;baRun\007\]\\$ "
 unset PROMPT_COMMAND
 
 export SUDO_ASKPASS="/usr/bin/X11/ssh-askpass"
@@ -16,7 +14,7 @@ alias sudo='sudo -A '
 delayandclose() {
 	echo
 	echo "Program exited with status: $?"
-	xttitle "rRun: $BASHPID [completed]"
+	xttitle "baRun: $BASHPID [completed]"
 	xwininfo -id $wid | grep -q 'Map State: IsViewable'
 	if [ $? -ne 0 ]; then
 		read -t 60 -n 1 -s || exit
@@ -28,12 +26,13 @@ delayandclose() {
 
 background() {
 	[[ -n $COMP_LINE ]] && return
-	[[ $BASH_COMMAND =~ ^(__)?fzf ]] && return
-	[[ ${FUNCNAME[1]} =~ ^(__)?fzf ]] && return
+        for pattern in ${ignore_patterns[@]}; do
+	  [[ $BASH_COMMAND =~ $pattern || ${FUNCNAME[1]} =~ $pattern  ]] && return
+	done
 
         history -a
 
-	xttitle "rRun: $BASHPID"
+	xttitle "baRun: $BASHPID"
 	xdotool windowunmap $wid
 	trap DEBUG
 
@@ -45,11 +44,13 @@ shopt -s extdebug
 
 wid=`xdotool getactivewindow`
 
+[[ -f ~/.barun_ignore ]] && ignore_file=~/.barun_ignore || ignore_file=/etc/barun/ignore
+readarray -t ignore_patterns < <(sed 's/#.*//' "$ignore_file" | grep -v '^$')
 
-if [[ -n "$rruncmd" ]]; then
-	echo "\$ $rruncmd"
+if [[ -n $baruncmd ]]; then
+	echo "\$ $baruncmd"
 	trap 'background' DEBUG
-	"$rruncmd"
+	"$baruncmd"
 else
 	trap 'background' DEBUG
 fi

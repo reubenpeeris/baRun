@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo Run program:
-bash --rcfile /usr/share/rrun/bashrc2 -i
-exit

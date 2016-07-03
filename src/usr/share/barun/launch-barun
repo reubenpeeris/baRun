@@ -1,0 +1,4 @@
+#!/bin/sh
+echo Run program:
+bash --rcfile /usr/share/barun/bashrc -i
+exit
