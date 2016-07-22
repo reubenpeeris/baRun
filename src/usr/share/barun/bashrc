@@ -50,7 +50,7 @@ readarray -t ignore_patterns < <(sed 's/#.*//' "$ignore_file" | grep -v '^$')
 if [[ -n $baruncmd ]]; then
 	echo "\$ $baruncmd"
 	trap 'background' DEBUG
-	"$baruncmd"
+	$baruncmd
 else
 	trap 'background' DEBUG
 fi
